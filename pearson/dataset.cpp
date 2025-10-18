@@ -48,7 +48,7 @@ namespace Dataset
         return result;
     }
 
-    void write(std::vector<double> data, std::string filename)
+    void write(const std::vector<double>& data, const std::string& filename)
     {
         std::ofstream f{};
 

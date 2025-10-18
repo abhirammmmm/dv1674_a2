@@ -43,7 +43,7 @@ Vector::Vector(const Vector &other)
 //    }
 
 // Faster than initial element by element copy inside the loop.
-    std::memcpy(data, other.data, size(double) * size);
+    std::memcpy(data, other.data, sizeof(double) * size);
 }
 
 // Reassign resources forcefully using the move constructor which is cheaper.

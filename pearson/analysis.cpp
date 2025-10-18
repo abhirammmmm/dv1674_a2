@@ -28,7 +28,7 @@ std::vector<double> correlation_coefficients(const std::vector<Vector>& datasets
     return result;
 }
 
-double pearson(Vector vec1, Vector vec2)
+double pearson(const Vector& vec1, const Vector& vec2)
 {
     auto x_mean { vec1.mean() };
     auto y_mean { vec2.mean() };
