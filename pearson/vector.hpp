@@ -15,18 +15,25 @@ public:
     Vector(unsigned size);
     Vector(unsigned size, double* data);
     Vector(const Vector& other);
+
+    // Defining new move constructor to avoid multiple double copy operations 
+    Vector(Vector&& other) noexcept;
+    // Defining "=" opearator overload to cut runtime with lower deep copies and lower heap allocations. 
+    Vector& operator=(Vector&& other) noexcept;
     ~Vector();
 
     double magnitude() const;
     double mean() const;
     double normalize() const;
-    double dot(Vector rhs) const;
+    // adding const reference for passing vector
+    double dot(const Vector& rhs) const;
 
     unsigned get_size() const;
     double* get_data();
 
-    Vector operator/(double div);
-    Vector operator-(double sub);
+    // Adding const
+    Vector operator/(double div) const;
+    Vector operator-(double sub) const;
     double operator[](unsigned i) const;
     double& operator[](unsigned i);
 };
