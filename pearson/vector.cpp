@@ -6,6 +6,8 @@ Author: David Holmqvist <daae19@student.bth.se>
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <algorithm>
+#include <cstring>
 
 Vector::Vector()
     : size{0}, data{nullptr}
@@ -35,10 +37,35 @@ Vector::Vector(unsigned size, double *data)
 Vector::Vector(const Vector &other)
     : Vector{other.size}
 {
-    for (auto i{0}; i < size; i++)
-    {
-        data[i] = other.data[i];
-    }
+//    for (auto i{0}; i < size; i++)
+//    {
+//        data[i] = other.data[i];
+//    }
+
+// Faster than initial element by element copy inside the loop.
+    std::memcpy(data, other.data, size(double) * size);
+}
+
+// Reassign resources forcefully using the move constructor which is cheaper.
+Vector::Vector(Vector&& other) noexcept
+    : size(other.size), data(other.data)
+{
+    other.size = 0;
+    other.data = nullptr;
+}
+
+// Move definition for assignment operator such that it frees previous unused resources.
+Vector& Vector::operator=(Vector&& other) noexcept
+{
+    if (this == &other) return *this;
+
+    delete[] data; // free current
+    size = other.size;
+    data = other.data;
+
+    other.size = 0;
+    other.data = nullptr;
+    return *this;
 }
 
 unsigned Vector::get_size() const
@@ -79,31 +106,34 @@ double Vector::magnitude() const
     return std::sqrt(dot_prod);
 }
 
-Vector Vector::operator/(double div)
+Vector Vector::operator/(double div) const
 {
-    auto result{*this};
-
+//    auto result{*this};
+    Vector result{size};
     for (auto i{0}; i < size; i++)
     {
-        result[i] /= div;
+        //result[i] /= div;
+        result[i] = data[i] / div;
+
     }
 
     return result;
 }
 
-Vector Vector::operator-(double sub)
+Vector Vector::operator-(double sub) const
 {
-    auto result{*this};
-
+//    auto result{*this};
+    Vector result{size};
     for (auto i{0}; i < size; i++)
     {
-        result[i] -= sub;
+        //result[i] -= sub;
+        result[i] = data[i] - sub;
     }
 
     return result;
 }
 
-double Vector::dot(Vector rhs) const
+double Vector::dot(const Vector& rhs) const
 {
     double result{0};
 

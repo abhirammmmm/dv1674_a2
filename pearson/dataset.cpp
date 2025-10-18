@@ -40,7 +40,9 @@ namespace Dataset
             std::copy_n(std::istream_iterator<double>{ss},
                         dimension,
                         new_vec.get_data());
-            result.push_back(new_vec);
+            //result.push_back(new_vec);
+		//define move semantics to utilize constryctors defined to overcome depp copy setback
+	    result.push_back(std::move(new_vec));
         }
 
         return result;
