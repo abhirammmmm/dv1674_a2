@@ -9,8 +9,9 @@ Author: David Holmqvist <daae19@student.bth.se>
 #define ANALYSIS_HPP
 
 namespace Analysis {
-std::vector<double> correlation_coefficients(std::vector<Vector> datasets);
-double pearson(Vector vec1, Vector vec2);
+// Large object is passed by const reference and avoids copying the entire vector everytime
+std::vector<double> correlation_coefficients(const std::vector<Vector>& datasets);
+double pearson(const Vector& vec1, const Vector& vec2);
 };
 
 #endif
