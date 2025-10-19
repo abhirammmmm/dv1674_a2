@@ -4,6 +4,7 @@ Author: David Holmqvist <daae19@student.bth.se>
 
 #if !defined(VECTOR_HPP)
 #define VECTOR_HPP
+#include <cstddef>
 
 class Vector {
 private:
@@ -15,11 +16,11 @@ public:
     Vector(unsigned size);
     Vector(unsigned size, double* data);
     Vector(const Vector& other);
-
-    // Defining new move constructor to avoid multiple double copy operations 
+    // Defining new move constructor to avoid multiple double copy operations
     Vector(Vector&& other) noexcept;
-    // Defining "=" opearator overload to cut runtime with lower deep copies and lower heap allocations. 
-    Vector& operator=(Vector&& other) noexcept;
+    // Defining "=" operator overload to cut runtime with lower deep copies and lower heap allocations. 
+    Vector& operator=(const Vector& other);       // copy assign
+    Vector& operator=(Vector&& other) noexcept;   // move assign
     ~Vector();
 
     double magnitude() const;
@@ -30,8 +31,7 @@ public:
 
     unsigned get_size() const;
     double* get_data();
-
-    // Adding const
+//adding const
     Vector operator/(double div) const;
     Vector operator-(double sub) const;
     double operator[](unsigned i) const;

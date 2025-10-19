@@ -41,14 +41,14 @@ namespace Dataset
                         dimension,
                         new_vec.get_data());
             //result.push_back(new_vec);
-		//define move semantics to utilize constryctors defined to overcome depp copy setback
-	    result.push_back(std::move(new_vec));
+	    //define move semantics to utilize constructors defined to overcome deep copy setback
+            result.push_back(std::move(new_vec));
         }
 
         return result;
     }
 
-    void write(const std::vector<double>& data, const std::string& filename)
+    void write(std::vector<double> data, std::string filename)
     {
         std::ofstream f{};
 
@@ -59,8 +59,8 @@ namespace Dataset
             std::cerr << "Failed to write data to file " << filename << std::endl;
             return;
         }
-
-        for (auto i{0}; i < data.size(); i++)
+	for (size_t i=0; i < data.size(); i++)
+        //for (auto i{0}; i < data.size(); i++)
         {
             f << std::setprecision(std::numeric_limits<double>::digits10 + 1) << data[i] << std::endl;
         }

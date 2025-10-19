@@ -12,7 +12,7 @@ Author: David Holmqvist <daae19@student.bth.se>
 namespace Dataset
 {
     std::vector<Vector> read(std::string filename);
-    void write(const std::vector<double>& data, const std::string& filename);
+    void write(std::vector<double> data, std::string filename);
 };
 
 #endif

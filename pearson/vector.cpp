@@ -6,8 +6,9 @@ Author: David Holmqvist <daae19@student.bth.se>
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include <algorithm>
-#include <cstring>
+#include <cstring>    // for std::memcpy
+#include <algorithm>  // for std::copy_n
+#include <numeric>    // optional
 
 Vector::Vector()
     : size{0}, data{nullptr}
@@ -37,16 +38,18 @@ Vector::Vector(unsigned size, double *data)
 Vector::Vector(const Vector &other)
     : Vector{other.size}
 {
-//    for (auto i{0}; i < size; i++)
-//    {
-//        data[i] = other.data[i];
-//    }
-
-// Faster than initial element by element copy inside the loop.
-    std::memcpy(data, other.data, sizeof(double) * size);
+    if (size > 0 && other.data) {
+        // using memcpy as it is faster than initial element by element copy inside the loop.
+        std::memcpy(data, other.data, sizeof(double) * size);
+    }
+    //for (auto i{0}; i < size; i++)
+    //{
+      //  data[i] = other.data[i];
+    //}
 }
 
-// Reassign resources forcefully using the move constructor which is cheaper.
+
+// Reassign resources forcefully using the move constructor which is cheaper
 Vector::Vector(Vector&& other) noexcept
     : size(other.size), data(other.data)
 {
@@ -55,6 +58,22 @@ Vector::Vector(Vector&& other) noexcept
 }
 
 // Move definition for assignment operator such that it frees previous unused resources.
+Vector& Vector::operator=(const Vector& other)
+{
+    if (this == &other) return *this;
+
+    if (size != other.size) {
+        delete[] data;
+        size = other.size;
+        data = (size > 0) ? new double[size] : nullptr;
+    }
+    if (size > 0 && other.data) {
+        std::memcpy(data, other.data, sizeof(double) * size);
+    }
+    return *this;
+}
+
+// Move cosntructor assignment
 Vector& Vector::operator=(Vector&& other) noexcept
 {
     if (this == &other) return *this;
@@ -91,8 +110,8 @@ double &Vector::operator[](unsigned i)
 double Vector::mean() const
 {
     double sum{0};
-
-    for (auto i{0}; i < size; i++)
+//unigned not auto
+    for (unsigned i=0; i < size; i++)
     {
         sum += data[i];
     }
@@ -105,39 +124,41 @@ double Vector::magnitude() const
     auto dot_prod{dot(*this)};
     return std::sqrt(dot_prod);
 }
+//Vector Vector::operator/(double div) 
 
 Vector Vector::operator/(double div) const
 {
-//    auto result{*this};
+    //auto result{*this};
     Vector result{size};
-    for (auto i{0}; i < size; i++)
+    for (auto i{0u}; i < size; i++)
     {
         //result[i] /= div;
         result[i] = data[i] / div;
-
     }
 
     return result;
 }
+//Vector Vector::operator-(double sub)
 
 Vector Vector::operator-(double sub) const
 {
-//    auto result{*this};
+    //auto result{*this};
     Vector result{size};
-    for (auto i{0}; i < size; i++)
+    for (auto i{0u}; i < size; i++)
     {
-        //result[i] -= sub;
+        //result[i] -= sub
         result[i] = data[i] - sub;
+            
     }
 
     return result;
 }
-
+//double Vector::dot(constVector rhs) const
 double Vector::dot(const Vector& rhs) const
 {
     double result{0};
 
-    for (auto i{0}; i < size; i++)
+    for (auto i{0u}; i < size; i++)
     {
         result += data[i] * rhs[i];
     }
